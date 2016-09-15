@@ -1,0 +1,40 @@
+# Eclipse stuff
+.classpath
+.project
+.settings
+**/.classpath
+**/.project
+**.settings
+# netbeans
+/nbproject
+**/nbproject
+# we use maven!
+/build.xml
+**/build.xml
+# maven
+/target
+**/target
+/staging
+**/staging
+# vim
+.*.sw[a-p]
+# various other potential build files
+/build
+/bin
+/dist
+/log
+**/build
+**/bin
+**/dist
+**/log
+# Mac filesystem dust
+/.DS_Store
+# intellij
+*.iml
+*.ipr
+*.iws
+.idea/
+/.classpath
+/.project
+/.settings
+
