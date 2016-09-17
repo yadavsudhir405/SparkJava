@@ -10,8 +10,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.2</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.8</source>
+          <target>1.8</target>
           <compilerArgument>-Xlint:all</compilerArgument>
           <showWarnings>true</showWarnings>
           <showDeprecation>true</showDeprecation>
@@ -27,21 +27,21 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
+              </filters>
               <transformers>
                 <transformer>
                   <mainClass>com.musigma.ird.socket.init.SocketTest</mainClass>
                 </transformer>
               </transformers>
-              <artifactSet>
-                <excludes>
-                  <exclude>org.apache.maven.surefire:surefire-junit3:jar:2.10</exclude>
-                  <exclude>junit:junit</exclude>
-                  <exclude>jmock:*</exclude>
-                  <exclude>*:xml-apis</exclude>
-                  <exclude>org.apache.maven:lib:tests</exclude>
-                  <exclude>log4j:log4j:jar:</exclude>
-                </excludes>
-              </artifactSet>
             </configuration>
           </execution>
         </executions>
@@ -49,6 +49,9 @@
     </plugins>
   </build>
   <properties>
+    <app.main.class>com.musigma.ird.socket.init.SocketTest</app.main.class>
+    <maven.compile.source>1.8</maven.compile.source>
+    <maven.compile.target>1.8</maven.compile.target>
     <spark.version>1.6.1</spark.version>
   </properties>
 </project>

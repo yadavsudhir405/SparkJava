@@ -2,6 +2,8 @@ package com.musigma.ird.socket.init;
 
 import com.musigma.ird.socket.SocketServer;
 import com.musigma.ird.socket.SocketServerConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author sudhir
@@ -13,6 +15,7 @@ public class SocketTest {
 
     private static final String HOST="localhost";
     private static  final String PORT="8081";
+    private  static final Logger LOGGER= LoggerFactory.getLogger(SocketTest.class);
 
     public static void main(String[] args) {
         testSocket();
@@ -20,8 +23,8 @@ public class SocketTest {
     private static void testSocket(){
         SocketServerConfig socketServerConfig=new SocketServerConfig.Config(HOST,PORT).build();
         SocketServer socketServer=socketServerConfig.getSocketServer();
-        System.out.println("Starting socket server");
+        LOGGER.info("Starting socket server");
         socketServer.start();
-        System.out.println("socket Server started");
+        LOGGER.info("socket Server started");
     }
 }
