@@ -15,11 +15,13 @@ public class SocketDTO {
     private final List<Field> fields;
     private final String query;
     private final  String filepath;
+    private final String tableName;
     SocketDTO(SocketDTOBuilder builder){
         this.socketCommand=builder.socketCommand;
         this.fields=builder.fields;
         this.filepath=builder.filepath;
         this.query=builder.query;
+        this.tableName=builder.tableName;
     }
 
     /**
@@ -30,6 +32,7 @@ public class SocketDTO {
         private  final List<Field> fields;
         private  String query;
         private   String filepath;
+        private String tableName;
 
         public SocketDTOBuilder(SocketCommands socketCommand, List<Field> fields) {
             this.socketCommand = socketCommand;
@@ -41,6 +44,10 @@ public class SocketDTO {
         }
         public SocketDTOBuilder addSqlQery(String sqlQuery){
             this.query=sqlQuery;
+            return this;
+        }
+        public SocketDTOBuilder addTableName(String tableName){
+            this.tableName=tableName;
             return this;
         }
         public SocketDTO build(){
@@ -62,5 +69,9 @@ public class SocketDTO {
 
     public String getQuery() {
         return query;
+    }
+
+    public String getTableName() {
+        return tableName;
     }
 }
