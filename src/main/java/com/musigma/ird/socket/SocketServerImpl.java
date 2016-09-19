@@ -33,10 +33,14 @@ class SocketServerImpl implements SocketServer {
 		}
 		try {
 			socketIoServer.start();
+			isServerStarted=true;
+
+
 			LOGGER.info("\n********************************************************************\n"
 					+ "Socket Server started at " + socketIoServer.getConfiguration().getHostname()
 					+ " with port number :" + socketIoServer.getConfiguration().getPort() + "\n"
 					+ "*************************************************************************");
+
 			socketIoServer.addConnectListener(new ConnectListener() {
 
 				@Override
@@ -57,12 +61,15 @@ class SocketServerImpl implements SocketServer {
 	 * {@inheritDoc}
 	 */
 	public void stop() {
+
 		try {
 			socketIoServer.stop();
+			isServerStarted=false;
 		} catch (Exception e) {
 			LOGGER.error("Error while stoping socket server ", e);
 			throw new SocketServerStopException(e.getMessage(), e);
 		}
+
 
 	}
 
@@ -84,6 +91,7 @@ class SocketServerImpl implements SocketServer {
 	 * {@inheritDoc}
 	 */
 	public boolean removeNamespace(String namespace) {
+
 		if (StringUtils.isEmpty(namespace)) {
 			throw new IllegalArgumentException("Empty namespace provided " + namespace);
 		}
@@ -118,6 +126,12 @@ class SocketServerImpl implements SocketServer {
 		// socketIoServer.addEventListener(eventName, eventClass, dataListener);
 		ensureServerRunning();
 		socketIoServer.addEventListener(eventName, eventClass, dataListener);
+	}
+
+	@Override
+	public String sendDataToNamesapce(String namespace,String event,String data) {
+		socketIoServer.getNamespace(namespace).getBroadcastOperations().sendEvent(event,data);
+		return "Success";
 	}
 
 	private void ensureServerRunning() {
