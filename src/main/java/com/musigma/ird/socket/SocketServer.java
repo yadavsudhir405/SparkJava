@@ -47,5 +47,6 @@ public interface SocketServer {
 	 * @param eventName
 	 */
     <T> void addEventListener(String eventName, Class<T> eventclass, DataListener<T> dataListener);
-	
+
+	public String sendDataToNamesapce(String namespace,String event,String data);
 }

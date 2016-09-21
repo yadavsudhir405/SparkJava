@@ -14,7 +14,7 @@ import java.io.InputStream;
  * @author sudhir
  *
  */
-class SSLConfig {
+public class SSLConfig {
 	private final String keyStorePassword;
 	private final Transport transport;
 	private final InputStream keyStroreInputstream;

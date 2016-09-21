@@ -20,8 +20,9 @@ class SocketServerManger {
 	/**
 	 * Creates and returns new instance of socketioserver instance.
 	 * 
-	 * @param namespace
-	 * @param socketServerName
+	 * @param host
+	 * @param port
+     * @param sslConfig
 	 * @return
 	 * @throws IllegalArgumentException
 	 *             - if either host or port is empty
@@ -34,13 +35,15 @@ class SocketServerManger {
 		if (StringUtils.isEmpty(port)) {
 			throw new IllegalArgumentException("port is Empty");
 		}
-		Configuration config = sslConfig == null ? initializeConfigurationWithoutWebSocket(host, port)
-				: initializeConfigurationWithWebSocket(host, port, sslConfig);
+
+
+		Configuration config = sslConfig == null ? initializeConfigurationWithoutSSLConfig(host, port)
+				: initializeConfigurationWithSSLConfig(host, port, sslConfig);
 		SocketIOServer socketIOServer = new SocketIOServer(config);
 		return socketIOServer;
 	}
 
-	private static Configuration initializeConfigurationWithoutWebSocket(final String host, final String port) {
+	private static Configuration initializeConfigurationWithoutSSLConfig(final String host, final String port) {
 		assert host != null;
 		assert port != null;
 		Configuration configuration = new Configuration();
@@ -53,11 +56,12 @@ class SocketServerManger {
 
 	}
 
-	private static Configuration initializeConfigurationWithWebSocket(final String host, final String port,
+	private static Configuration initializeConfigurationWithSSLConfig(final String host, final String port,
 			SSLConfig sslConfig) {
 		assert host != null;
 		assert port != null;
 		assert sslConfig != null;
+
 		Configuration configuration = new Configuration();
 		String keyStorePassword = sslConfig.getKeyStorePassword();
 

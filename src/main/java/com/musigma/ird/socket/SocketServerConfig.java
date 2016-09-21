@@ -27,9 +27,10 @@ public class SocketServerConfig {
 			this.port = port;
 		}
 
-		public void addSSLConfiguration(String keyStorepassword, Transport transport,
+		public Config addSSLConfiguration(String keyStorepassword, Transport transport,
 				InputStream keyStroreInputstream) {
 			this.configuration = new SSLConfig(keyStorepassword, transport, keyStroreInputstream);
+			return this;
 		}
 
 		public Config addNamespace(String namespace) {
