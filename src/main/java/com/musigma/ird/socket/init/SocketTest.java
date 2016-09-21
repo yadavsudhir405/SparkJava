@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.concurrent.*;
 
 /**
@@ -20,7 +21,8 @@ import java.util.concurrent.*;
  *         Time:12:53 PM
  *         Project:SparkJava
  */
-public class SocketTest {
+public class SocketTest implements Serializable {
+    private static final long serialVersionUID = 1L;
     private static final Logger LOGGER= LoggerFactory.getLogger(SocketTest.class);
     private static final  String keyStrorePlassword="musigma";
     private static final Transport TRANSPORT=Transport.WEBSOCKET;
@@ -42,7 +44,9 @@ public class SocketTest {
         PORT=args[1];
         String appname=args[2];
         String sparkNode=args[3];
+        LOGGER.info("Initializing SparkContext to MasterNode "+sparkNode);
         SparkService.intializeSparkContext(appname,sparkNode);
+        LOGGER.info("Starting socket server");
         testSocket();
     }
     private static void testSocket(){
@@ -60,28 +64,43 @@ public class SocketTest {
 
             @Override
             public void onData(SocketIOClient client, String data, AckRequest ackSender) throws Exception {
-                LOGGER.info("Message received from client "+client.getRemoteAddress()+"With data :"+data);
-                Future<String> futuretask=executor.submit(new Task(data));
-                String response=futuretask.get();
-                client.sendEvent("message",response);
-                // ackSender.sendAckData(new HelloCommand().showCommand());
-                LOGGER.info("Acknowledgement is sent to the client");
+                {
+                    LOGGER.info("Message received from client " + client.getRemoteAddress() + "With data :" + data);
+                    Future<String> futuretask = executor.submit(new CustomTask(data.toString()));
+                    String response;
+                    try {
+                        response = futuretask.get();
+                    } catch (InterruptedException e) {
+                        LOGGER.error(e.getMessage(), e);
+                        response = "Error while executing task";
+                    } catch (ExecutionException e) {
+                        LOGGER.error(e.getMessage(), e);
+                        response = "Error while executing task";
+                    }
 
+                    client.sendEvent("message", response);
+                    // ackSender.sendAckData(new HelloCommand().showCommand());
+                    LOGGER.info("Acknowledgement is sent to the client");
+                }
             }
+
         });
 
 
     }
-    private static class Task implements Callable<String>{
+    private static class CustomTask implements Serializable, Callable<String>{
+        private static final long serialVersionUID = 1L;
         private String inputJson;
 
-        public Task(String inputJson) {
+        public CustomTask(String inputJson) {
             this.inputJson = inputJson;
         }
 
         @Override
         public String call() throws Exception {
+            LOGGER.info("Handling command for input json"+inputJson);
             return new SocketCommandHadler(inputJson).handleCommand();
         }
     }
+
 }

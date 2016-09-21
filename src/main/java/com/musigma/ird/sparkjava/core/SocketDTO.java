@@ -1,5 +1,6 @@
 package com.musigma.ird.sparkjava.core;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,13 +10,16 @@ import java.util.List;
  *         Time:1:00 PM
  *         Project:SparkJava
  */
-public class SocketDTO {
+public class SocketDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private  SocketCommands socketCommand;
+    private  List<Field> fields;
+    private  String query;
+    private   String filepath;
+    private  String tableName;
+    public SocketDTO(){
 
-    private final SocketCommands socketCommand;
-    private final List<Field> fields;
-    private final String query;
-    private final  String filepath;
-    private final String tableName;
+    }
     SocketDTO(SocketDTOBuilder builder){
         this.socketCommand=builder.socketCommand;
         this.fields=builder.fields;
@@ -73,5 +77,25 @@ public class SocketDTO {
 
     public String getTableName() {
         return tableName;
+    }
+
+    public void setSocketCommand(SocketCommands socketCommand) {
+        this.socketCommand = socketCommand;
+    }
+
+    public void setFields(List<Field> fields) {
+        this.fields = fields;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
+
+    public void setFilepath(String filepath) {
+        this.filepath = filepath;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 }

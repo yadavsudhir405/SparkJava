@@ -23,6 +23,9 @@ public class JsonObjectMapper {
     private JsonObjectMapper(){
         throw new AssertionError("Object instantiation is not allowed for "+JsonObjectMapper.class.getName());
     }
+    static {
+
+    }
 
     /**
      * The {@code  getInstanceFromJson} method converts json string to correspoinding Java Object.

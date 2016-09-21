@@ -13,7 +13,8 @@ import java.util.zip.ZipOutputStream;
  *         Time:5:33 PM
  *         Project:SparkJava
  */
-public class FileZipUtil {
+public class FileZipUtil implements Serializable {
+    private static final long serialVersionUID = 1L;
     private static final Logger LOGGER= LoggerFactory.getLogger(FileZipUtil.class);
     private static final String CLASSFILES_DIRECTORY="/tmp/classFiles";
     private FileZipUtil() {
@@ -30,13 +31,17 @@ public class FileZipUtil {
         FileOutputStream fos=null;
         ZipOutputStream zos=null;
         try {
+             createDirectory(source);
              fos=new FileOutputStream(source+"/"+jarName);
              zos=new ZipOutputStream(fos);
-            File classDirectory=new File(source);
-            String[] classFiles=classDirectory.list();
-            for(String classFile:classFiles){
-                addToZipFile(classFile, zos);
-            }
+             File classDirectory=new File(source);
+             String[] classFiles=classDirectory.list();
+             for(String classFile:classFiles){
+                 if(classFile.contains(".class")){
+                     addToZipFile(classFile, zos);
+                 }
+
+             }
         } catch (FileNotFoundException e) {
             LOGGER.error(e.getMessage(),e);
 
@@ -57,6 +62,17 @@ public class FileZipUtil {
                     LOGGER.error(e.getMessage(),e);
                 }
             }
+        }
+    }
+
+    /**
+     * This methods created the directory if missing.
+     * @param path
+     */
+    private static void createDirectory(String path){
+        File direFile=new File(path);
+        if (!direFile.exists()){
+            direFile.mkdirs();
         }
     }
     private static void addToZipFile(String fileName, ZipOutputStream zos) throws IOException {

@@ -7,7 +7,7 @@ package com.musigma.ird.exception;
  *         Project:SparkJava
  */
 public class JsonToObjectConvertionException extends  Exception{
-
+    private static final long serialVersionUID = 1L;
     public JsonToObjectConvertionException() {
     }
 

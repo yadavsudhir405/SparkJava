@@ -1,7 +1,5 @@
 package com.musigma.ird.sparkjava.core;
 
-import com.musigma.ird.utils.ClassGenerator;
-import com.musigma.ird.utils.FileZipUtil;
 import com.musigma.ird.utils.JsonObjectMapper;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -12,6 +10,7 @@ import org.apache.spark.sql.SQLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,14 +22,16 @@ import java.util.concurrent.ConcurrentHashMap;
  *         Time:4:19 PM
  *         Project:SparkJava
  */
-public class SparkService {
+public class SparkService implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private static final Logger LOGGER= LoggerFactory.getLogger(SparkService.class);
     private static final String CLASSFILES_DIRECTORY="/tmp/classFiles";
     private static final String JAR_NAME="required.jar";
-    private static final String JAR_FILE=CLASSFILES_DIRECTORY+"/"+JAR_NAME;
     private static volatile SparkService sparkService;
-    private final JavaSparkContext sparkContext;
-    private final  SQLContext sqlContext;
+
+    private transient JavaSparkContext sparkContext;
+    private transient final  SQLContext sqlContext;
     private final Map<String,DataFrame> tableDataFrameMapper;
     private SparkService(String applicationName,String sparkNode){
         if(sparkService!=null){
@@ -39,6 +40,7 @@ public class SparkService {
         sparkContext=new JavaSparkContext(new SparkConf().setAppName(applicationName).setMaster(sparkNode));
         sqlContext=new SQLContext(sparkContext);
         tableDataFrameMapper=new ConcurrentHashMap<String,DataFrame>();
+        sparkContext.addJar("/home/sudhir/yadavsudhir405/SparkApps/SparkJava/target/sparkJava-1.0-SNAPSHOT.jar");
     }
 
     public static SparkService intializeSparkContext(String applicationName,String sparkNode){
@@ -46,6 +48,7 @@ public class SparkService {
             synchronized (SparkService.class){
                 if(sparkService==null){
                     sparkService=new SparkService(applicationName, sparkNode);
+
                 }
             }
         }
@@ -64,16 +67,18 @@ public class SparkService {
         }
         Object object=null;
         synchronized (sparkService){
-            ClassGenerator.getObjectWithFields(tableName, fields);
-            FileZipUtil.createjarFile(CLASSFILES_DIRECTORY,JAR_NAME);
-            sparkContext.addJar(JAR_FILE);
+            object= JavaAssistClassManager.INSTANCE.getObjectFromClassName(tableName,fields);
+            loadjar(tableName+".jar");
         }
         return executeQuery(query,object,fields);
     }
-    private String executeQuery(String query,Object obj,List<Field> fields){
+    private String executeQuery(String query,Object obj,final List<Field> fields){
         DataFrame dataFrame=sqlContext.sql(query);
+        dataFrame.show();
         final Class cl = obj.getClass();
         List<Object> rows=dataFrame.javaRDD().map(new Function<Row, Object>() {
+
+            private static final long serialVersionUID = 1L;
             @Override
             public Object call(Row row) throws Exception {
                 Object obj1 = cl.newInstance();
@@ -91,10 +96,26 @@ public class SparkService {
 
     public String loadDataFrame(String hdfsFilePath,List<Field> fields,String tableName){
         DataFrame dataFrame=sqlContext.read().json(hdfsFilePath);
+        dataFrame.cache();
         dataFrame.registerTempTable(tableName);
-        tableDataFrameMapper.putIfAbsent(tableName,dataFrame);
-        return "tableName is registered as dataframe";
+        tableDataFrameMapper.put(tableName,dataFrame);
+        return tableName+" is registered as dataframe";
     }
+    private void loadjar(String jarname){
+        if (isjarNotLoadedToSparkContext(jarname)){
+            LOGGER.info(jarname+" is missing to the sparkContext,Adding Jar");
+            sparkContext.addJar(CLASSFILES_DIRECTORY+"/"+jarname);
+        }else {
+            LOGGER.info(jarname+" is already into the spark contextJar,Skippin  loading  "+jarname+" to SparkContext");
+        }
 
+    }
+    private boolean isjarNotLoadedToSparkContext(final String jarName){
+        List<String> loadedjarList=sparkContext.jars();
+        for(String jar:loadedjarList){
+            LOGGER.info(jar);
+        }
+        return loadedjarList.contains(jarName)?false:true;
+    }
 
 }

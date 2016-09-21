@@ -6,6 +6,6 @@ package com.musigma.ird.sparkjava.core;
  *         Time:12:33 PM
  *         Project:SparkJava
  */
-public enum SocketCommands {
+public enum SocketCommands  {
     PERFORM_SQL_QUERY,LOAD_DATA_FRAME,INVALID;
 }

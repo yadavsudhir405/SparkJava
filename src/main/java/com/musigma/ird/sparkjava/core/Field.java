@@ -1,14 +1,20 @@
 package com.musigma.ird.sparkjava.core;
 
+import java.io.Serializable;
+
 /**
  * @author sudhir
  *         Date:19/9/16
  *         Time:12:50 PM
  *         Project:SparkJava
  */
-public final  class Field {
-    private final Type type;
-    private final String name;
+public final  class Field implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private  Type type;
+    private  String name;
+    public Field(){
+
+    }
 
     public Field(Type type, String name) {
         this.type = type;
@@ -21,6 +27,14 @@ public final  class Field {
 
     public String getName() {
         return name;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
