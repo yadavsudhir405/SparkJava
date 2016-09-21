@@ -56,20 +56,26 @@ public class TestAnnotation {
         private static void startSocketClinet(){
             try{
                 SparkDTO sparkdto=new SparkDTO();
-                Field field1=new Field(Type.INTEGR, "id");
+                Field field1=new Field(Type.STRING, "id");
                 Field field2=new Field(Type.STRING, "name");
                 Field field3=new Field(Type.STRING, "email");
+                Field field4=new Field(Type.STRING, "city");
+                Field field5=new Field(Type.STRING, "country");
                 List<Field> fieldList=new ArrayList<>();
-               // fieldList.add(field1);
+                fieldList.add(field1);
                 fieldList.add(field2);
                 fieldList.add(field3);
+                fieldList.add(field4);
+                fieldList.add(field5);
                 sparkdto.setFields(fieldList);
 
                 sparkdto.setFilepath("hdfs://mastodon1.musigma.com:8020/user/musigma/vcldemo/users.json");
 //sparkdto.setFileType("JSON");
-                sparkdto.setQuery("select name,email from User limit 1000");
+                sparkdto.setQuery("select id,name,email,city,country from User limit 1000");
                 sparkdto.setTableName("User");
+                sparkdto.setModelName("User");
                 sparkdto.setSocketCommand(SocketCommands.valueOf("PERFORM_SQL_QUERY"));
+
                 //sparkdto.setSocketCommand(SocketCommands.valueOf("LOAD_DATA_FRAME"));
 //String json=new Gson().toJson(sparkdto);
 //String json=JsonObjectMapper.getJsonStringFromJavaObject(sparkdto);

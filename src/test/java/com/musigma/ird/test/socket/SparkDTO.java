@@ -17,6 +17,15 @@ public class SparkDTO {
     private  String query;
     private   String filepath;
     private  String tableName;
+    private String modelName;
+
+    public String getModelName() {
+        return modelName;
+    }
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
+    }
 
     public SocketCommands getSocketCommand() {
         return socketCommand;

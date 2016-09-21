@@ -50,7 +50,7 @@ public class SocketCommandHadler implements CommandHandler,Serializable {
             }
             case PERFORM_SQL_QUERY:{
                 LOGGER.info("############################# Handling SQL_QUERY Command ##########################################");
-                return SparkService.getSparkService().performSelectQuery(socketDTO.getQuery(),socketDTO.getTableName(),socketDTO.getFields());
+                return SparkService.getSparkService().performSelectQuery(socketDTO);
             }
             case INVALID:{
                 LOGGER.info("##################### INVALID COMMAND RECEIVED ##############################");

@@ -11,12 +11,13 @@ import java.util.List;
  *         Project:SparkJava
  */
 public class SocketDTO implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private  static final long serialVersionUID = 1L;
     private  SocketCommands socketCommand;
     private  List<Field> fields;
     private  String query;
-    private   String filepath;
+    private  String filepath;
     private  String tableName;
+    private  String  modelName;
     public SocketDTO(){
 
     }
@@ -26,6 +27,7 @@ public class SocketDTO implements Serializable {
         this.filepath=builder.filepath;
         this.query=builder.query;
         this.tableName=builder.tableName;
+        this.modelName=builder.modelName;
     }
 
     /**
@@ -37,6 +39,7 @@ public class SocketDTO implements Serializable {
         private  String query;
         private   String filepath;
         private String tableName;
+        private String modelName;
 
         public SocketDTOBuilder(SocketCommands socketCommand, List<Field> fields) {
             this.socketCommand = socketCommand;
@@ -53,6 +56,12 @@ public class SocketDTO implements Serializable {
         public SocketDTOBuilder addTableName(String tableName){
             this.tableName=tableName;
             return this;
+        }
+        public SocketDTOBuilder addModelName(String modelName){
+
+                this.modelName=modelName;
+                return this;
+
         }
         public SocketDTO build(){
             return new SocketDTO(this);
@@ -97,5 +106,13 @@ public class SocketDTO implements Serializable {
 
     public void setTableName(String tableName) {
         this.tableName = tableName;
+    }
+
+    public String getModelName() {
+        return modelName;
+    }
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
     }
 }

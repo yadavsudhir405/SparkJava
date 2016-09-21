@@ -59,7 +59,11 @@ public class SparkService implements Serializable {
         return sparkService;
     }
 
-    public String performSelectQuery(String query,String tableName,List<Field> fields){
+    public String performSelectQuery(SocketDTO socketDTO){
+        String tableName=socketDTO.getTableName();
+        String modelName=socketDTO.getModelName();
+        String query=socketDTO.getQuery();
+        List<Field> fields=socketDTO.getFields();
         DataFrame dataFrame=tableDataFrameMapper.get(tableName);
         if(dataFrame==null){
             LOGGER.info("No dataframe found, with table name "+tableName);
@@ -67,8 +71,8 @@ public class SparkService implements Serializable {
         }
         Object object=null;
         synchronized (sparkService){
-            object= JavaAssistClassManager.INSTANCE.getObjectFromClassName(tableName,fields);
-            loadjar(tableName+".jar");
+            object= JavaAssistClassManager.INSTANCE.getObjectFromClassName(modelName,fields);
+            loadjar(modelName+".jar");
         }
         return executeQuery(query,object,fields);
     }
@@ -83,9 +87,9 @@ public class SparkService implements Serializable {
             public Object call(Row row) throws Exception {
                 Object obj1 = cl.newInstance();
                 Class tt = obj1.getClass();
-                for (int i = 0; i < fields.size(); i++) {
 
-                    tt.getField(fields.get(i).getName()).set(obj1, String.valueOf(row.get(i)));
+                for (int i = 0; i < fields.size(); i++) {
+                    tt.getField(fields.get(i).getName()).set(obj1, row.getString(i));
 
                 }
                 return obj1;
